@@ -4,7 +4,7 @@ public class CollectibleBehaviour : MonoBehaviour
 {
     // Coin value that will be added to the player's score
     [SerializeField]
-    int coinValue = 1;
+    int collectibleValue = 1;
 
     private Renderer collectibleRenderer;
     private Color originalColor;

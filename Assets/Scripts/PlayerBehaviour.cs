@@ -61,24 +61,42 @@ public class PlayerBehaviour : MonoBehaviour
             currentDoor.Interact();
         }
     }
-        void Update()
+    void Update()
     {
         RaycastHit hitInfo;
         // Check if the player is pressing the interact key (e.g., "E")
         Debug.DrawRay(spawnPoint.position, spawnPoint.forward * 5f, Color.red);
         if (Physics.Raycast(spawnPoint.position, spawnPoint.forward, out hitInfo, 5f))
         {
-            Debug.Log($"Hit: {hitInfo.collider.gameObject.name}");
-            // Check if the raycast hit a GameObject with a CoinBehaviour or DoorBehaviour component
             if (hitInfo.collider.gameObject.CompareTag("Collectible"))
             {
                 if (currentCollectible != null)
                 {
                     currentCollectible.Unhighlight();
+                    currentCollectible = null;
                 }
                 canInteract = true;
                 currentCollectible = hitInfo.collider.gameObject.GetComponent<CollectibleBehaviour>();
                 currentCollectible.Highlight();
+            }
+
+            else
+            {
+                if (currentCollectible != null)
+                {
+                    currentCollectible.Unhighlight();
+                    currentCollectible = null;
+                    canInteract = false;
+                }
+            }
+        }
+        else
+        {
+            if (currentCollectible != null)
+            {
+                currentCollectible.Unhighlight();
+                currentCollectible = null;
+                canInteract = false;
             }
         }
     }
