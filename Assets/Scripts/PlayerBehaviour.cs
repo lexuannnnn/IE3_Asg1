@@ -1,12 +1,37 @@
 using UnityEngine;
-
+using TMPro;
+using UnityEngine.UI;
 public class PlayerBehaviour : MonoBehaviour
 {
+    [SerializeField]
+    TextMeshProUGUI healthText;
+    [SerializeField]
+    TextMeshProUGUI collectibleText;
     bool canInteract = false;
-    // Stores the current coin object the player has detected
+    // Stores the current collectible/door the player has most recently detected
     CollectibleBehaviour currentCollectible = null;
     DoorBehaviour currentDoor = null;
     public Transform spawnPoint;
+    private int currentHealth = 100;
+    private int collectibleCount = 0;
+
+    void Start()
+    {
+        healthText.text = "health " + currentHealth.ToString();
+        collectibleText.text = "Collectibles collected " + collectibleCount.ToString() + " / 10";
+    }
+
+    public void ModifyScore(int collectibleValue)
+    {
+        currentHealth += collectibleValue;
+        healthText.text = "Health " + currentHealth.ToString();
+    }
+
+    public void ModifyCount(int collectibleScore)
+    {
+        collectibleCount += collectibleScore;
+        collectibleText.text = "Collectibles collected " + collectibleCount.ToString() + " / 10";
+    }
 
     // Trigger Callback for when the player enters a trigger collider
     void OnTriggerEnter(Collider other)
@@ -15,8 +40,6 @@ public class PlayerBehaviour : MonoBehaviour
         // Check if the player detects a trigger collider tagged as "Collectible" or "Door"
         if (other.CompareTag("Collectible"))
         {
-            // Set the canInteract flag to true
-            // Get the CoinBehaviour component from the detected object
             canInteract = true;
             currentCollectible = other.GetComponent<CollectibleBehaviour>();
             currentCollectible.Collect();
@@ -29,10 +52,9 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    // Trigger Callback for when the player exits a trigger collider
     void OnTriggerExit(Collider other)
     {
-        // Check if the player has a detected coin or door
+        // Check if the player has a detected collectible or door
         if (currentCollectible != null)
         {
             canInteract = false;
@@ -65,9 +87,9 @@ public class PlayerBehaviour : MonoBehaviour
     {
         RaycastHit hitInfo;
         // Check if the player is pressing the interact key (e.g., "E")
-        Debug.DrawRay(spawnPoint.position, spawnPoint.forward * 5f, Color.red);
         if (Physics.Raycast(spawnPoint.position, spawnPoint.forward, out hitInfo, 5f))
         {
+            // Check if the raycast is hitting an object with the "Collectible" tag
             if (hitInfo.collider.gameObject.CompareTag("Collectible"))
             {
                 if (currentCollectible != null)
@@ -79,17 +101,8 @@ public class PlayerBehaviour : MonoBehaviour
                 currentCollectible = hitInfo.collider.gameObject.GetComponent<CollectibleBehaviour>();
                 currentCollectible.Highlight();
             }
-
-            else
-            {
-                if (currentCollectible != null)
-                {
-                    currentCollectible.Unhighlight();
-                    currentCollectible = null;
-                    canInteract = false;
-                }
-            }
         }
+        // For when the raycast is not hitting any object
         else
         {
             if (currentCollectible != null)
