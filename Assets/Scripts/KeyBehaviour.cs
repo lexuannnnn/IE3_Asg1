@@ -2,15 +2,16 @@ using UnityEngine;
 
 public class KeyBehaviour : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnTriggerEnter(Collider other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (other.CompareTag("Player"))
+        {
+            PlayerBehaviour player = other.GetComponent<PlayerBehaviour>();
+            if (player != null)
+            {
+                player.hasKey = true;
+                Destroy(gameObject); // Remove key after pickup
+            }
+        }
     }
 }

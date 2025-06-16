@@ -5,11 +5,11 @@ TagManager:
   serializedVersion: 3
   tags:
   - CinemachineTarget
-  - Collectible
   - Door
   - Fire
   - Acid
   - Spikes
+  - Collectible
   layers:
   - Default
   - TransparentFX

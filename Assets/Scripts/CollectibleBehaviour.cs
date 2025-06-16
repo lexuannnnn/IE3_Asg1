@@ -15,6 +15,7 @@ public class CollectibleBehaviour : MonoBehaviour
     void Start()
     {
         collectibleRenderer = GetComponent<Renderer>();
+
         // Optional but recommended: use unique material instance
         collectibleRenderer.material = new Material(collectibleRenderer.material);
         originalColor = collectibleRenderer.material.color;

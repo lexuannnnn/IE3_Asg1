@@ -7,15 +7,15 @@ public class PlayerBehaviour : MonoBehaviour
     TextMeshProUGUI healthText;
     [SerializeField]
     TextMeshProUGUI collectibleText;
-    [SerializeField]
     bool canInteract = false;
     // Stores the current collectible/door the player has most recently detected
     CollectibleBehaviour currentCollectible = null;
     DoorBehaviour currentDoor = null;
     public Transform spawnPoint;
-    public int currentHealth = 100;
-    public int collectibleCount = 0;
-    private int newHealth = 0; // Variable to store the new health value
+    private int currentHealth = 100;
+    private int collectibleCount = 0;
+    public bool hasKey = false; // Indicates if the player has a key for locked doors
+
     void Start()
     {
         healthText.text = "Health " + currentHealth.ToString();
@@ -24,13 +24,10 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void ModifyHealth(int damage)
     {
-        newHealth = currentHealth -= damage;
+        currentHealth -= damage;
+        healthText.text = "Health " + currentHealth.ToString();
+    }
 
-        if (healthText != null)
-        {
-            healthText.text = "Health " + newHealth.ToString();
-        }
-}
     public void ModifyCount(int collectibleScore)
     {
         collectibleCount += collectibleScore;
