@@ -1,14 +1,15 @@
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine.InputSystem;
 public class PlayerBehaviour : MonoBehaviour
 {
     [SerializeField]
     TextMeshProUGUI healthText;
     [SerializeField]
     TextMeshProUGUI collectibleText;
-    [SerializeField]
-    private TextMeshProUGUI interactText;
+    [SerializeField] private TextMeshProUGUI interactText;
+    [SerializeField] private GameObject winScreen;
     bool canInteract = false;
     // Stores the current collectible/door the player has most recently detected
     CollectibleBehaviour currentCollectible = null;
@@ -37,6 +38,11 @@ public class PlayerBehaviour : MonoBehaviour
     {
         collectibleCount += collectibleScore;
         collectibleText.text = "Collectibles collected " + collectibleCount.ToString() + " / 10";
+        if (collectibleCount >= 10)
+        {
+            winScreen.SetActive(true); // Show the win screen when 10 collectibles are collected
+            GetComponent<PlayerInput>().enabled = false; // Disable player movement
+        }
     }
 
     // Trigger Callback for when the player enters a trigger collider
