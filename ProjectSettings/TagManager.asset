@@ -10,6 +10,7 @@ TagManager:
   - Acid
   - Spikes
   - Collectible
+  - Key
   layers:
   - Default
   - TransparentFX
