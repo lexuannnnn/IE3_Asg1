@@ -1,11 +1,14 @@
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 public class PlayerBehaviour : MonoBehaviour
 {
     [SerializeField]
     TextMeshProUGUI healthText;
     [SerializeField]
     TextMeshProUGUI collectibleText;
+    [SerializeField]
+    private TextMeshProUGUI interactText;
     bool canInteract = false;
     // Stores the current collectible/door the player has most recently detected
     CollectibleBehaviour currentCollectible = null;
@@ -20,6 +23,8 @@ public class PlayerBehaviour : MonoBehaviour
     {
         healthText.text = "Health " + currentHealth.ToString();
         collectibleText.text = "Collectibles collected " + collectibleCount.ToString() + " / 10";
+        if (interactText != null)
+            interactText.gameObject.SetActive(false); // Ensure the interact text is hidden at start
     }
 
     public void ModifyHealth(int damage)
@@ -46,6 +51,10 @@ public class PlayerBehaviour : MonoBehaviour
         {
             currentDoor = other.GetComponent<DoorBehaviour>();
         }
+        else if (other.CompareTag("Key"))
+        {
+            currentKey = other.GetComponent<KeyBehaviour>();
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -61,6 +70,11 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 currentDoor = null;
             }
+            else if (other.CompareTag("Key") && currentKey != null)
+            {
+                currentKey.Unhighlight();
+                currentKey = null;
+            }
         }
     }
     void Update()
@@ -68,6 +82,7 @@ public class PlayerBehaviour : MonoBehaviour
         RaycastHit hitInfo;
         Debug.DrawRay(spawnPoint.position, spawnPoint.forward * 5f, Color.red);
         // Check if the player is pressing the interact key (e.g., "E")
+        bool interactable = false;
         if (Physics.Raycast(spawnPoint.position, spawnPoint.forward, out hitInfo, 5f))
         {
             GameObject hitObject = hitInfo.collider.gameObject;
@@ -81,10 +96,12 @@ public class PlayerBehaviour : MonoBehaviour
                     currentCollectible = collectible;
                     currentCollectible.Highlight();
                 }
+                interactable = true;
             }
             else if (hitObject.CompareTag("Door"))
             {
                 currentDoor = hitObject.GetComponent<DoorBehaviour>();
+                interactable = true;
             }
             else if (hitObject.CompareTag("Key"))
             {
@@ -95,6 +112,7 @@ public class PlayerBehaviour : MonoBehaviour
                     currentKey = key;
                     currentKey.Highlight();
                 }
+                interactable = true;
             }
             else
             {
@@ -116,6 +134,11 @@ public class PlayerBehaviour : MonoBehaviour
             }
             currentDoor = null;
         }
+        if (interactText != null)
+        {
+            interactText.gameObject.SetActive(interactable);
+            interactText.text = "Press [E] to Interact";
+        }
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (currentCollectible != null)
@@ -131,7 +154,9 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 currentKey.Collect(this);
                 currentKey = null;
-            }   
+            }
+            if (interactText != null)
+                interactText.gameObject.SetActive(false);
         }
     }
 }
