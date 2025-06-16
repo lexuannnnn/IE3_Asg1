@@ -7,26 +7,30 @@ public class PlayerBehaviour : MonoBehaviour
     TextMeshProUGUI healthText;
     [SerializeField]
     TextMeshProUGUI collectibleText;
+    [SerializeField]
     bool canInteract = false;
     // Stores the current collectible/door the player has most recently detected
     CollectibleBehaviour currentCollectible = null;
     DoorBehaviour currentDoor = null;
     public Transform spawnPoint;
-    private int currentHealth = 100;
-    private int collectibleCount = 0;
-
+    public int currentHealth = 100;
+    public int collectibleCount = 0;
+    private int newHealth = 0; // Variable to store the new health value
     void Start()
     {
-        healthText.text = "health " + currentHealth.ToString();
+        healthText.text = "Health " + currentHealth.ToString();
         collectibleText.text = "Collectibles collected " + collectibleCount.ToString() + " / 10";
     }
 
-    public void ModifyScore(int collectibleValue)
+    public void ModifyHealth(int damage)
     {
-        currentHealth += collectibleValue;
-        healthText.text = "Health " + currentHealth.ToString();
-    }
+        newHealth = currentHealth -= damage;
 
+        if (healthText != null)
+        {
+            healthText.text = "Health " + newHealth.ToString();
+        }
+}
     public void ModifyCount(int collectibleScore)
     {
         collectibleCount += collectibleScore;
@@ -36,7 +40,6 @@ public class PlayerBehaviour : MonoBehaviour
     // Trigger Callback for when the player enters a trigger collider
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.name);
         // Check if the player detects a trigger collider tagged as "Collectible" or "Door"
         if (other.CompareTag("Collectible"))
         {
@@ -64,6 +67,7 @@ public class PlayerBehaviour : MonoBehaviour
         {
             canInteract = false;
             currentDoor = null;
+            OnInteract(); // Automatically interact with the door when exited
 
         }
     }
@@ -86,6 +90,7 @@ public class PlayerBehaviour : MonoBehaviour
     void Update()
     {
         RaycastHit hitInfo;
+        Debug.DrawRay(spawnPoint.position, spawnPoint.forward * 5f, Color.red);
         // Check if the player is pressing the interact key (e.g., "E")
         if (Physics.Raycast(spawnPoint.position, spawnPoint.forward, out hitInfo, 5f))
         {

@@ -22,4 +22,10 @@ public class DoorBehaviour : MonoBehaviour
             isOpen = true;
         }
     }
+    void OnTriggerExit(Collider other)
+    {
+            Vector3 doorRotation = transform.eulerAngles;
+            doorRotation.y += 90f;
+            transform.eulerAngles = doorRotation;
+    }
 }

@@ -4,8 +4,7 @@ public class CollectibleBehaviour : MonoBehaviour
 {
     // Coin value that will be added to the player's score
     [SerializeField]
-    int collectibleValue = 1;
-    int collectibleScore = 1; // Score for collectible count
+    int collectibleValue = 1; // Score for collectible count
 
     private Renderer collectibleRenderer;
     private Color originalColor;
@@ -30,8 +29,7 @@ public class CollectibleBehaviour : MonoBehaviour
             PlayerBehaviour playerScript = player.GetComponent<PlayerBehaviour>();
             if (playerScript != null)
             {
-                playerScript.ModifyScore(collectibleValue);
-                playerScript.ModifyCount(collectibleScore);
+                playerScript.ModifyCount(collectibleValue);
             }
         }
         Destroy(gameObject); // Destroy the coin object
