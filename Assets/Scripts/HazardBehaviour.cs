@@ -8,9 +8,16 @@ public class HazardBehaviour : MonoBehaviour
     public int acidDamage = 30;
     [SerializeField]
     public int spikesDamage = 20; // Damage dealt by the hazard
+    AudioSource hazardAudioSource;
+
+    void Start()
+    {
+        hazardAudioSource = GetComponent<AudioSource>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
+        hazardAudioSource.Play();
         if (other.CompareTag("Player"))
         {
             PlayerBehaviour player = other.GetComponent<PlayerBehaviour>();

@@ -5,6 +5,8 @@ public class CollectibleBehaviour : MonoBehaviour
     // Coin value that will be added to the player's score
     [SerializeField]
     int collectibleValue = 1; // Score for collectible count
+    [SerializeField]
+    AudioClip collectSound;
 
     private Renderer collectibleRenderer;
     private Color originalColor;
@@ -13,10 +15,8 @@ public class CollectibleBehaviour : MonoBehaviour
     void Start()
     {
         collectibleRenderer = GetComponent<Renderer>();
-
         // Optional but recommended: use unique material instance
         collectibleRenderer.material = new Material(collectibleRenderer.material);
-
         originalColor = collectibleRenderer.material.color;
     }
 
@@ -29,6 +29,7 @@ public class CollectibleBehaviour : MonoBehaviour
             PlayerBehaviour playerScript = player.GetComponent<PlayerBehaviour>();
             if (playerScript != null)
             {
+                AudioSource.PlayClipAtPoint(collectSound, transform.position);
                 playerScript.ModifyCount(collectibleValue);
             }
         }

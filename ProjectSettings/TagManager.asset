@@ -6,9 +6,10 @@ TagManager:
   tags:
   - CinemachineTarget
   - Collectible
-  - Fire
-  - Water
   - Door
+  - Fire
+  - Acid
+  - Spikes
   layers:
   - Default
   - TransparentFX
