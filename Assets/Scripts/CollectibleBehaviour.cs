@@ -11,6 +11,7 @@ public class CollectibleBehaviour : MonoBehaviour
     private Renderer collectibleRenderer;
     private Color originalColor;
     public Color highlightColor = Color.yellow; // Changeable in Inspector
+    AudioSource collectibleAudioSource;
 
     void Start()
     {
@@ -18,7 +19,10 @@ public class CollectibleBehaviour : MonoBehaviour
 
         // Optional but recommended: use unique material instance
         collectibleRenderer.material = new Material(collectibleRenderer.material);
+
         originalColor = collectibleRenderer.material.color;
+
+        collectibleAudioSource = GetComponent<AudioSource>();
     }
 
     // Method to collect the coin

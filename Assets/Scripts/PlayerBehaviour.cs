@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 public class PlayerBehaviour : MonoBehaviour
 {
     [SerializeField]
@@ -11,6 +10,7 @@ public class PlayerBehaviour : MonoBehaviour
     // Stores the current collectible/door the player has most recently detected
     CollectibleBehaviour currentCollectible = null;
     DoorBehaviour currentDoor = null;
+    KeyBehaviour currentKey = null; // Stores the current key the player has detected
     public Transform spawnPoint;
     private int currentHealth = 100;
     private int collectibleCount = 0;
@@ -40,48 +40,27 @@ public class PlayerBehaviour : MonoBehaviour
         // Check if the player detects a trigger collider tagged as "Collectible" or "Door"
         if (other.CompareTag("Collectible"))
         {
-            canInteract = true;
             currentCollectible = other.GetComponent<CollectibleBehaviour>();
-            currentCollectible.Collect();
         }
         else if (other.CompareTag("Door"))
         {
-            canInteract = true;
             currentDoor = other.GetComponent<DoorBehaviour>();
-            OnInteract(); // Automatically interact with the door when detected
         }
     }
 
     void OnTriggerExit(Collider other)
     {
         // Check if the player has a detected collectible or door
-        if (currentCollectible != null)
         {
-            canInteract = false;
-            currentCollectible = null;
-        }
-        if (currentDoor != null)
-        {
-            canInteract = false;
-            currentDoor = null;
-            OnInteract(); // Automatically interact with the door when exited
-
-        }
-    }
-
-    void OnInteract()
-    {
-        if (currentCollectible != null)
-        {
-            // Call the Collect method on the coin object
-            // Pass the player object as an argument
-            currentCollectible.Collect();
-        }
-        if (currentDoor != null)
-        {
-            // Call the Interact method on the door object
-            // This allows the player to open or close the door
-            currentDoor.Interact();
+            if (other.CompareTag("Collectible") && currentCollectible != null)
+            {
+                currentCollectible.Unhighlight();
+                currentCollectible = null;
+            }
+            else if (other.CompareTag("Door"))
+            {
+                currentDoor = null;
+            }
         }
     }
     void Update()
@@ -91,17 +70,40 @@ public class PlayerBehaviour : MonoBehaviour
         // Check if the player is pressing the interact key (e.g., "E")
         if (Physics.Raycast(spawnPoint.position, spawnPoint.forward, out hitInfo, 5f))
         {
+            GameObject hitObject = hitInfo.collider.gameObject;
             // Check if the raycast is hitting an object with the "Collectible" tag
-            if (hitInfo.collider.gameObject.CompareTag("Collectible"))
+            if (hitObject.CompareTag("Collectible"))
+            {
+                CollectibleBehaviour collectible = hitObject.GetComponent<CollectibleBehaviour>();
+                if (currentCollectible != collectible)
+                {
+                    if (currentCollectible != null) currentCollectible.Unhighlight();
+                    currentCollectible = collectible;
+                    currentCollectible.Highlight();
+                }
+            }
+            else if (hitObject.CompareTag("Door"))
+            {
+                currentDoor = hitObject.GetComponent<DoorBehaviour>();
+            }
+            else if (hitObject.CompareTag("Key"))
+            {
+                KeyBehaviour key = hitObject.GetComponent<KeyBehaviour>();
+                if (currentKey != key)
+                {
+                    if (currentKey != null) currentKey.Unhighlight();
+                    currentKey = key;
+                    currentKey.Highlight();
+                }
+            }
+            else
             {
                 if (currentCollectible != null)
                 {
                     currentCollectible.Unhighlight();
                     currentCollectible = null;
                 }
-                canInteract = true;
-                currentCollectible = hitInfo.collider.gameObject.GetComponent<CollectibleBehaviour>();
-                currentCollectible.Highlight();
+                currentDoor = null;
             }
         }
         // For when the raycast is not hitting any object
@@ -111,8 +113,25 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 currentCollectible.Unhighlight();
                 currentCollectible = null;
-                canInteract = false;
             }
+            currentDoor = null;
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (currentCollectible != null)
+            {
+                currentCollectible.Collect();
+                currentCollectible = null;
+            }
+            if (currentDoor != null)
+            {
+                currentDoor.Interact();
+            }
+            if (currentKey != null)
+            {
+                currentKey.Collect(this);
+                currentKey = null;
+            }   
         }
     }
 }

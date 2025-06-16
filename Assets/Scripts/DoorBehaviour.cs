@@ -9,6 +9,7 @@ public class DoorBehaviour : MonoBehaviour
     public TextMeshProUGUI doorText;
     public float messageDuration = 2f;
     public bool isLocked = false; // Indicates if the door is locked
+    float doorTimer = 0f;
 
     void Start()
     {
@@ -30,6 +31,7 @@ public class DoorBehaviour : MonoBehaviour
                     doorRotation.y -= 90f;
                     transform.eulerAngles = doorRotation;
                     isOpen = true;
+                    doorTimer = 0f;
                 }
                 else
                 {
@@ -45,6 +47,7 @@ public class DoorBehaviour : MonoBehaviour
                 doorRotation.y -= 90f;
                 transform.eulerAngles = doorRotation;
                 isOpen = true;
+                doorTimer = 0f; // Reset timer when door is opened
             }
         }
 
@@ -61,5 +64,22 @@ public class DoorBehaviour : MonoBehaviour
     {
         if (doorText != null)
             doorText.gameObject.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (isOpen)
+    {
+        doorTimer += Time.deltaTime;
+        if (doorTimer >= 2f)
+        {
+            doorAudioSource.Play();
+            Vector3 doorRotation = transform.eulerAngles;
+            doorRotation.y += 90f;
+            transform.eulerAngles = doorRotation;
+            isOpen = false;
+            doorTimer = 0f;
+        }
+    }
     }
 }
