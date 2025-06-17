@@ -28,6 +28,7 @@ public class KeyBehaviour : MonoBehaviour
         }
         keyAudioSource = GetComponent<AudioSource>();
     }
+
     /// <summary>
     /// Highlights the key when the player is near.
     /// </summary>
@@ -36,6 +37,7 @@ public class KeyBehaviour : MonoBehaviour
         if (keyRenderer != null)
             keyRenderer.material.color = highlightColor;
     }
+
     /// <summary>
     /// Unhighlights the key when the player is no longer near.
     /// </summary>
@@ -44,6 +46,7 @@ public class KeyBehaviour : MonoBehaviour
         if (keyRenderer != null)
             keyRenderer.material.color = originalColor;
     }
+    
     /// <summary>
     /// Handles the interaction when the player collects the key.
     /// Increments the player's key count and plays a sound.

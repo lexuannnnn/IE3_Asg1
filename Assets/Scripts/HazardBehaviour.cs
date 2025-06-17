@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class HazardBehaviour : MonoBehaviour
 {
+    
     /// <summary>
     /// Damage dealt by fire hazards.
     /// </summary>

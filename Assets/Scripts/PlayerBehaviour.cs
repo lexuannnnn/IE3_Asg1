@@ -24,6 +24,7 @@ public class PlayerBehaviour : MonoBehaviour
     private int currentHealth = 100;
     private int collectibleCount = 0;
     public bool hasKey = false; // Indicates if the player has a key for locked doors
+
     /// <summary>
     /// Initializes the player behaviour.
     /// Sets up the health and collectible text displays.
@@ -36,22 +37,22 @@ public class PlayerBehaviour : MonoBehaviour
         if (interactText != null)
             interactText.gameObject.SetActive(false); // Ensure the interact text is hidden at start
     }
+
     /// <summary>
     /// Modifies the player's health.
     /// Reduces health by the specified damage amount.
     /// </summary>
-    /// <param name="damage"></param>
     public void ModifyHealth(int damage)
     {
         currentHealth -= damage;
         healthText.text = "Health " + currentHealth.ToString();
     }
+
     /// <summary>
     /// Modifies the player's collectible count.
     /// Increments the collectible count by the specified value.
     /// If the collectible count reaches 10, it shows the win screen and disables player movement.
     /// </summary>
-    /// <param name="collectibleScore"></param>
     public void ModifyCount(int collectibleScore)
     {
         collectibleCount += collectibleScore;
@@ -83,6 +84,7 @@ public class PlayerBehaviour : MonoBehaviour
             currentKey = other.GetComponent<KeyBehaviour>();
         }
     }
+
     /// <summary>
     /// Handles the interaction when the player exits a trigger collider.
     /// Unhighlights the collectible or key if the player moves away from it.
@@ -107,6 +109,7 @@ public class PlayerBehaviour : MonoBehaviour
             }
         }
     }
+
     /// <summary>
     /// Updates the player's interaction state.
     /// Checks for raycast hits to determine if the player can interact with collectibles, doors, or keys.
@@ -160,6 +163,7 @@ public class PlayerBehaviour : MonoBehaviour
                 currentDoor = null;
             }
         }
+        
         // For when the raycast is not hitting any object
         else
         {
