@@ -1,18 +1,27 @@
+/*
+* Author: Tan Le Xuan
+* Date: 17/06/25
+* Description: Allows the player to collect items that increase score and progression.
+*/
+
 using UnityEngine;
 
 public class CollectibleBehaviour : MonoBehaviour
 {
-    // Coin value that will be added to the player's score
     [SerializeField]
     int collectibleValue = 1; // Score for collectible count
     [SerializeField]
-    AudioClip collectSound;
+    AudioClip collectSound; // Sound played when the collectible is collected
 
-    private Renderer collectibleRenderer;
-    private Color originalColor;
+    private Renderer collectibleRenderer; // Renderer for the collectible object
+    private Color originalColor; // Original color of the collectible for unhighlighting
     public Color highlightColor = Color.yellow; // Changeable in Inspector
-    AudioSource collectibleAudioSource;
+    AudioSource collectibleAudioSource; // Audio source for playing sounds
 
+    /// <summary>
+    /// Initializes the collectible object.
+    /// Sets up the renderer and audio source.
+    /// </summary>
     void Start()
     {
         collectibleRenderer = GetComponent<Renderer>();
@@ -25,7 +34,10 @@ public class CollectibleBehaviour : MonoBehaviour
         collectibleAudioSource = GetComponent<AudioSource>();
     }
 
-    // Method to collect the coin
+    /// <summary>
+    /// Handles the interaction when the player collects the collectible.
+    /// Increments the player's collectible count and plays a sound.
+    /// </summary>
     public void Collect()
     {
         GameObject player = GameObject.FindWithTag("Player");
@@ -41,7 +53,9 @@ public class CollectibleBehaviour : MonoBehaviour
         Destroy(gameObject); // Destroy the coin object
     }
 
-    // Highlight the coin (e.g. change its color)
+    /// <summary>
+    /// Highlights the collectible when the player is near.
+    /// </summary>
     public void Highlight()
     {
         if (collectibleRenderer != null)
@@ -50,7 +64,9 @@ public class CollectibleBehaviour : MonoBehaviour
         }
     }
 
-    // Remove the highlight from the coin
+    /// <summary>
+    /// Unhighlights the collectible when the player moves away.
+    /// </summary>
     public void Unhighlight()
     {
         if (collectibleRenderer != null)

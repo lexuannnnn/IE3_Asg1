@@ -1,3 +1,9 @@
+/*
+* Author: Tan Le Xuan
+* Date: 17/06/25
+* Description: Manages player movement, input, and interactions with the game world.
+*/
+
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
@@ -11,15 +17,18 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] private TextMeshProUGUI interactText;
     [SerializeField] private GameObject winScreen;
     bool canInteract = false;
-    // Stores the current collectible/door the player has most recently detected
-    CollectibleBehaviour currentCollectible = null;
-    DoorBehaviour currentDoor = null;
+    CollectibleBehaviour currentCollectible = null; // Stores the current collectible the player has most recently detected
+    DoorBehaviour currentDoor = null; // Stores the current door the player has most recently detected
     KeyBehaviour currentKey = null; // Stores the current key the player has detected
     public Transform spawnPoint;
     private int currentHealth = 100;
     private int collectibleCount = 0;
     public bool hasKey = false; // Indicates if the player has a key for locked doors
-
+    /// <summary>
+    /// Initializes the player behaviour.
+    /// Sets up the health and collectible text displays.
+    /// Sets the interact text to be hidden at the start.
+    /// </summary>
     void Start()
     {
         healthText.text = "Health " + currentHealth.ToString();
@@ -27,13 +36,22 @@ public class PlayerBehaviour : MonoBehaviour
         if (interactText != null)
             interactText.gameObject.SetActive(false); // Ensure the interact text is hidden at start
     }
-
+    /// <summary>
+    /// Modifies the player's health.
+    /// Reduces health by the specified damage amount.
+    /// </summary>
+    /// <param name="damage"></param>
     public void ModifyHealth(int damage)
     {
         currentHealth -= damage;
         healthText.text = "Health " + currentHealth.ToString();
     }
-
+    /// <summary>
+    /// Modifies the player's collectible count.
+    /// Increments the collectible count by the specified value.
+    /// If the collectible count reaches 10, it shows the win screen and disables player movement.
+    /// </summary>
+    /// <param name="collectibleScore"></param>
     public void ModifyCount(int collectibleScore)
     {
         collectibleCount += collectibleScore;
@@ -45,7 +63,10 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    // Trigger Callback for when the player enters a trigger collider
+    /// <summary>
+    /// Handles the interaction when the player enters a trigger collider.
+    /// Detects if the player is near a collectible, door, or key.
+    /// </summary>
     void OnTriggerEnter(Collider other)
     {
         // Check if the player detects a trigger collider tagged as "Collectible" or "Door"
@@ -62,7 +83,10 @@ public class PlayerBehaviour : MonoBehaviour
             currentKey = other.GetComponent<KeyBehaviour>();
         }
     }
-
+    /// <summary>
+    /// Handles the interaction when the player exits a trigger collider.
+    /// Unhighlights the collectible or key if the player moves away from it.
+    /// </summary>
     void OnTriggerExit(Collider other)
     {
         // Check if the player has a detected collectible or door
@@ -83,6 +107,12 @@ public class PlayerBehaviour : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Updates the player's interaction state.
+    /// Checks for raycast hits to determine if the player can interact with collectibles, doors, or keys.
+    /// If the player is near a collectible, door, or key, it highlights the object and shows the interact text.
+    /// If the player presses the interact key (e.g., "E"), it collects the collectible, interacts with the door, or collects the key.
+    /// </summary>
     void Update()
     {
         RaycastHit hitInfo;
